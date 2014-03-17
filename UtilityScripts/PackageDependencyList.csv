@@ -1,4 +1,5 @@
 PackageName,OnCran,Install,GitHubUsername,Description
+animation,TRUE,TRUE,,"Create animated GIF graphics."
 colorspace,TRUE,TRUE,,"Explicit control over the HCL color scheme."
 devtools,TRUE,TRUE,,"Used in the C1 survival for sourcing gists."
 digest,TRUE,TRUE,,"Creates SHA hashes for the recruiting database."

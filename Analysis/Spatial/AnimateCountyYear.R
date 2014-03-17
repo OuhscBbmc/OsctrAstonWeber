@@ -6,8 +6,8 @@ require(animation)
 # pathDirectory <- "F:/Projects/OuHsc/SafeCare/Spatial/SafeCareSpatial"
 # pathDirectoryData <- file.path(pathDirectory, "PhiFreeDatasets")
 # pathDirectoryCode <- pathDirectory
-pathInputSummaryCountyYear <- file.path("./Data/Raw/CountCountyYearFortified.csv")
-pathInputMappingCode <- file.path("./Analysis/Spatial/MapFunctions.R")
+pathInputSummaryCountyYear <- file.path("./Data/Raw/2014-03-14 inpatient DM amp per 1000DM byYear noborder.csv")
+pathInputMappingCode <- file.path("./Code/MapFunctions.R")
 pathOutputAnimation <- file.path("./Analysis/Spatial/MapAnimation.gif")
 pathDirectoryImages <-  file.path("./Analysis/Spatial/AnimationImages")
 
@@ -17,19 +17,15 @@ ds <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 # ds$DV <- ds[, dvName]
 # ds$DVLabel <- scales::comma(ds$DV)
 
-dvName <- "CountPerCapitaAnnual" #The number of victims per county population; darker counties have more victims, adjusted for pop
+dvName <- "Rate" #The number of people with amputations, per 1,000 diabetics
 ds$DV <- ds[, dvName]
 ds$DVLabel <- gsub("^0.", ".",round(ds$DV,3)) #Remove leading zeros.
-
-# dvName <- "CountPerCapitaRank" #The county's rank for the number of victims per county population; darker counties have more victims, adjusted for pop
-# ds$DV <- ds[, dvName]
-# ds$DVLabel <- ds$DV
 
 dvFloor <- min(ds$DV)
 dvCeiling <- max(ds$DV)
 source(pathInputMappingCode)
 
-years <- 2002:2011 #years <- sort(unique(ds$ReferralYear))
+years <- sort(unique(ds$ReferralYear)) #2007:2012
 intervals <- rep(1, length(years))
 intervals[1] <- 4
 intervals[length(intervals)] <- 4

@@ -8,12 +8,11 @@ require(RColorBrewer)
 # pathDirectoryData <- file.path(pathDirectory, "PhiFreeDatasets")
 # pathDirectoryCode <- pathDirectory
 
-pathInputSummaryStateYear <- file.path("./PhiFreeData/Derived/StateYearFortified.csv")
+pathInputSummaryStateYear <- file.path("./PhiFreeData/Raw/StateYearRate.csv")
 pathInputSummaryCountyYear <- file.path("./PhiFreeData/Derived/CountyYearFortified.csv")
 pathInputMappingCode <- file.path("./Code/MapFunctions.R")
 pathDirectoryImages <-  file.path(getwd(), "Analysis/Spatial/AnimationImages") #This needs the qualified path to work correctly with ImageMagick
 pathOutputAnimation <- file.path("./Analysis/Spatial/MapAnimation.gif")
-
 
 dsCountyAllYears <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 # dsCountyAllYears <- dsCountyAllYears[dsCountyAllYears$ReferralYear %in% years, ]
@@ -40,7 +39,6 @@ source(pathInputMappingCode)
 dsCounty <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 dsState <- read.csv(pathInputSummaryStateYear, stringsAsFactors=FALSE)
 dsCounty <- dsCounty[dsCounty$ReferralYear %in% years, ]
-dsState <- dsState[dsState$ReferralYear %in% years, ]
 dsCounty$DV <- dsCounty[, dvName]
 dsState$DV <- dsState[, dvName]
 
@@ -51,7 +49,7 @@ animationIntervals[length(animationIntervals)] <- 3
 breakPoints <- c(-Inf, 3.64, 4.72, 5.79, Inf)
 intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
-palette <- RColorBrewer::brewer.pal(n=breakPoints, name="YlGn")
+palette <- RColorBrewer::brewer.pal(n=intervalCount, name="Blues")
 # colorMissing <- "gray80"  
 
 

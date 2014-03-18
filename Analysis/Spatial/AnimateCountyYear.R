@@ -35,7 +35,7 @@ animationIntervals[length(animationIntervals)] <- 2 #4
 breakPoints <- c(-Inf, 3.64, 4.72, 5.79, Inf)
 intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
-palette <- RColorBrewer::brewer.pal(n=breakPoints, name="YlGn")
+palette <- RColorBrewer::brewer.pal(n=intervalCount, name="Blues")
 
 # dsInitial <- ds[ds$ReferralYear==2007, ]
 # MapCounties(dsValue=dsInitial, deviceWidth=14, showCountyValues=T, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling, paletteResource=palette)

@@ -41,7 +41,7 @@ breakPoints <- c(min(ds$DV, na.rm=T), 3.64, 4.72, 5.79, max(ds$DV, na.rm=T)) #Re
 
 intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
-palette <- RColorBrewer::brewer.pal(n=intervalCount, name="Blues")
+palette <- RColorBrewer::brewer.pal(n=intervalCount, name="GnBu")
 
 # dsInitial <- ds[ds$ReferralYear==2007, ]
 # MapCounties(dsValue=dsInitial, deviceWidth=14, showCountyValues=T, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling, paletteResource=palette)

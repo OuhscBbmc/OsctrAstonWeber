@@ -46,7 +46,8 @@ animationIntervals <- rep(1, length(years))
 animationIntervals[1] <- 1
 animationIntervals[length(animationIntervals)] <- 3
 
-breakPoints <- c(-Inf, 3.64, 4.72, 5.79, Inf)
+breakPoints <- c(min(dsCountyAllYears$DV, na.rm=T), 3.64, 4.72, 5.79, max(dsCountyAllYears$DV, na.rm=T)) #Requested by Chris for the *yearly* rate
+# breakPointsPretty <- paste(breakPoints), collapse=", ")
 intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
 palette <- RColorBrewer::brewer.pal(n=intervalCount, name="Blues")

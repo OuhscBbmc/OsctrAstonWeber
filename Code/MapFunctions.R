@@ -14,7 +14,8 @@ require(plyr)
 
 MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="",
                          dvFloor=min(dsValue$DV, na.rm=T), dvCeiling=max(dsValue$DV, na.rm=T),
-                         intervalCount=3, breakPoints=seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)) {
+                         intervalCount=3, breakPoints=seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1),
+                         paletteResource=rev(sequential_hcl(n=intervalCount, h=340, c.=c(80, 0), l=c(40, 90), power=colorPower))) {
   
   dsValuePlot <- data.frame(
     CountyID=dsValue$CountyID, 
@@ -34,7 +35,7 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
   
   # highestFloor <- breakPoints[intervalCount]
   # inHighestCategory <- (dsValuePlot$DV > highestFloor)
-  paletteResource <- rev(sequential_hcl(n=intervalCount, h=340, c.=c(80, 0), l=c(40, 90), power=colorPower))
+  
   
   DvInterval <- function( dv ) {
     return( classIntervals(dv, n=intervalCount, style="fixed", fixedBreaks=breakPoints))  
@@ -56,8 +57,8 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
   g <- g + geom_map(aes_string(fill="ColorFill"), map=dsBoundary, color="gray20")
   #g <- g + geom_text(aes(label=CountyName, x=long, y=lat)) 
   if( showCountyValues ) {
-    g <- g + geom_text(aes_string(label="CountyName", x="LabelLongitude", y="LabelLatitude"), vjust=-.2, size=deviceWidth*.25)
-    g <- g + geom_text(aes_string(label="DVLabel", x="LabelLongitude", y="LabelLatitude"), vjust=1, size=deviceWidth*.35)
+    g <- g + geom_text(aes_string(label="CountyName", x="LabelLongitude", y="LabelLatitude"), vjust=-.2, size=deviceWidth*.25, na.rm=T)
+    g <- g + geom_text(aes_string(label="DVLabel", x="LabelLongitude", y="LabelLatitude"), vjust=1, size=deviceWidth*.35, na.rm=T)
   }
   
   g <- g + expand_limits(x=dsBoundary$long, y=dsBoundary$lat) 
@@ -78,9 +79,10 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
 
 MapCountiesWithInset <- function( 
   dsValueCountyOneYear, 
-  deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="", dvFloor=min(dsValue$DV), dvCeiling=max(dsValuePlot$DV), #For the map
-  dsValueCountyAllYears, dsValueState, labelThreshold=.01, yearBand=NA #For Inset
-) {
+  deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="", dvFloor=min(dsValueCountyOneYear$DV), dvCeiling=max(dsValueCountyOneYear$DV), #For the map
+  dsValueCountyAllYears, dsValueState, labelThreshold=.01, yearBand=NA, #For Inset
+  intervalCount=3, breakPoints=seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1),
+  paletteResource=rev(sequential_hcl(n=intervalCount, h=340, c.=c(80, 0), l=c(40, 90), power=colorPower))) {
   
   
   #Start a new page and define the layout of the panels
@@ -89,10 +91,28 @@ MapCountiesWithInset <- function(
   #   Extend the insert 70% of the way up the parent panel, and 36% across.
   subvp <- viewport(width=.36, height=.7, x=0, y=0, just=c(0,0)) 
   
-  big <-  MapCounties(dsValue=dsValueCountyOneYear, deviceWidth=deviceWidth, mapTitle=mapTitle, dvFloor=dvFloor, dvCeiling=dvCeiling)
-  small <- GraphLongitudinalTrend(dsValueCountyAllYears, dsValueState, labelThreshold=labelThreshold, yearBand=yearBand)
+  big <-  MapCounties(dsValue=dsValueCountyOneYear, deviceWidth=deviceWidth, mapTitle=mapTitle, dvFloor=dvFloor, dvCeiling=dvCeiling#,
+                      #intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=paletteResource
+                      )
+  
+  small <- GraphLongitudinalTrend(dsCounty=dsValueCountyAllYears, dsState=dsValueState, labelThreshold=labelThreshold, yearBand=yearBand)
   #   big
   print( big )
-  print( small, vp=subvp )
+  print( small, vp=subvp ) 
+}
+
+GraphLongitudinalTrend <- function( dsCounty, dsState, labelThreshold=.01, yearBand=NA ) {
+  g <- ggplot(dsCounty, aes(x=ReferralYear, y=DV, ymin=0, group=CountyID, color=factor(CountyID)))
+  if( !is.na(yearBand) )
+    g <- g + geom_vline(xintercept = yearBand, alpha=.2, size=20)
+  g <- g + geom_line(stat="identity")
+  g <- g + geom_line(data=dsState, aes(x=ReferralYear, y=DV, group=NA, color=NA), stat="identity", size=1, color="black")
+  g <- g + geom_smooth(data=dsState, aes(x=ReferralYear, y=DV, group=NA, color=NA), method="loess", size=3)
+  if( !is.na(labelThreshold) )
+    g <- g + geom_text(data=dsCounty[dsCounty$DV >labelThreshold, ], aes(x=ReferralYear,label=CountyName), vjust=1, size=4)
   
+  g <- g + scale_x_continuous(name="", breaks=years)
+  g <- g + scale_y_continuous(name=dvName, limits=c(0, max(dsCounty$DV)), expand=c(0,0))
+  g <- g + theme(legend.position = 'none')
+  return( g )
 }

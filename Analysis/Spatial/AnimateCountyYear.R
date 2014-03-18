@@ -2,6 +2,7 @@
 rm(list=ls(all=TRUE)) #Clear variables
 require(ggplot2)
 require(animation)
+require(RColorBrewer)
 
 # pathDirectory <- "F:/Projects/OuHsc/SafeCare/Spatial/SafeCareSpatial"
 # pathDirectoryData <- file.path(pathDirectory, "PhiFreeDatasets")
@@ -10,6 +11,9 @@ pathInputSummaryCountyYear <- file.path("./PhiFreeData/Derived/CountyYearFortifi
 pathInputMappingCode <- file.path("./Code/MapFunctions.R")
 pathOutputAnimation <- file.path("./Analysis/Spatial/MapAnimation.gif")
 pathDirectoryImages <-  file.path(getwd(), "Analysis/Spatial/AnimationImages") #This needs the qualified path to work correctly with ImageMagick
+palette <- RColorBrewer::brewer.pal(n=4, name="YlGn")
+colorMissing <- "gray80"  
+  
 
 ds <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 
@@ -43,3 +47,7 @@ s <- saveGIF({
 
 # ss <- strsplit(s, split=" ")
 # ss[[length(ss)]][length(ss[[1]])]
+
+dsInitial <- ds[ds$ReferralYear==2007, ]
+p0 <- MapCountiesWithInset(dsValueCountyOneYear=dsInitial, deviceWidth=14, showCountyValues=T, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling, paletteResource=palette)
+print(p0)

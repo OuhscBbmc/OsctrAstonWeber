@@ -21,15 +21,14 @@ dvName <- "Rate" #The number of people with amputations, per 1,000 diabetics
 ds$DV <- ds[, dvName]
 ds$DVLabel <- gsub("^0.", ".",round(ds$DV,3)) #Remove leading zeros.
 
-dvFloor <- min(ds$DV)
-dvCeiling <- max(ds$DV)
+dvFloor <- min(ds$DV, na.rm=T)
+dvCeiling <- max(ds$DV, na.rm=T)
 source(pathInputMappingCode)
 
 years <- sort(unique(ds$ReferralYear)) #2007:2012
 intervals <- rep(1, length(years))
 intervals[1] <- 2 #4
 intervals[length(intervals)] <- 2 #4
-# saveMovie({
 s <- saveGIF({
   for( year in years ) {
     dsSlice <- ds[ds$ReferralYear==year, ]
@@ -42,7 +41,5 @@ s <- saveGIF({
   }
 }, outdir=pathDirectoryImages, movie.name=paste0("Animated", dvName, ".gif"), interval=intervals,ani.width=1600, ani.height=800)
 
-# , outdir=pathDirectoryImages
-# movie.name=paste0(dvName, ".gif"),
-ss <- strsplit(s, split=" ")
-ss[[length(ss)]][length(ss[[1]])]
+# ss <- strsplit(s, split=" ")
+# ss[[length(ss)]][length(ss[[1]])]

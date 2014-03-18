@@ -57,7 +57,7 @@ dsCountyYearFortified <- data.frame(CountyID=integer(0), CountyName=character(0)
 for( year in years ) {
   dsSlice <- dsCountyYear[dsCountyYear$ReferralYear==year, ]
   dsSlice <- merge(x=dsLookup, y=dsSlice, by.x="ID", by.y="CountyID", all.x=TRUE, all.y=FALSE)
-  dsSlice$Rate <- ifelse(is.na(dsSlice$Rate), 0, dsSlice$Rate)
+#   dsSlice$Rate <- ifelse(is.na(dsSlice$Rate), 0, dsSlice$Rate)
   dsSlice$CountyName <- dsSlice$Name
   dsSlice$ReferralYear <- year #This fills in the NAs that exist in the county's without a report that year.
   dsSlice <- plyr::rename(dsSlice, replace=c(ID="CountyID")) #Rename the ID column

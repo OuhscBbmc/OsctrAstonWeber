@@ -13,7 +13,8 @@ require(ggplot2)
 require(plyr)
 
 MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="",
-                         dvFloor=min(dsValue$DV), dvCeiling=max(dsValue$DV) ) {
+                         dvFloor=min(dsValue$DV, na.rm=T), dvCeiling=max(dsValue$DV, na.rm=T),
+                         intervalCount=3, breakPoints=seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)) {
   
   dsValuePlot <- data.frame(
     CountyID=dsValue$CountyID, 
@@ -26,9 +27,9 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
     stringsAsFactors=FALSE
   )
   
-  intervalCount <- 3
-  #breakPoints <- pretty(dsValuePlot$DV, n=intervalCount)
-  breakPoints <- seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)
+#   intervalCount <- 3
+#   breakPoints <- pretty(dsValuePlot$DV, n=intervalCount)
+#   breakPoints <- seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)
   print(breakPoints)
   
   # highestFloor <- breakPoints[intervalCount]

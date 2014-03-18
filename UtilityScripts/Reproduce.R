@@ -6,6 +6,10 @@
 # to produce a groomed dataset suitable for analysis and graphing.
 
 ###################################
+# Install ImageMagick, or one of the other
+# http://imagemagick.org/script/binary-releases.php#windows
+
+###################################
 # Clear memory from previous runs
 base::rm(list=base::ls(all=TRUE))
 
@@ -100,3 +104,5 @@ base::require(testit)
 #   knitr::knit(input=pathRmd, output=pathMd)
 #   markdown::markdownToHTML(file=pathMd, output=pathHtml)
 # }
+
+

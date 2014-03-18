@@ -106,13 +106,13 @@ GraphLongitudinalTrend <- function( dsCounty, dsState, labelThreshold=.01, yearB
   if( !is.na(yearBand) )
     g <- g + geom_vline(xintercept = yearBand, alpha=.2, size=20)
   g <- g + geom_line(stat="identity")
-  g <- g + geom_line(data=dsState, aes(x=ReferralYear, y=DV, group=NA, color=NA), stat="identity", size=1, color="black")
-  g <- g + geom_smooth(data=dsState, aes(x=ReferralYear, y=DV, group=NA, color=NA), method="loess", size=3)
+#   g <- g + geom_line(data=dsState, aes(x=ReferralYear, y=DV, group=NA, color=NA), stat="identity", size=1, color="black")
+#   g <- g + geom_smooth(data=dsState, aes(x=ReferralYear, y=DV, group=NA, color=NA), method="loess", size=3)
   if( !is.na(labelThreshold) )
     g <- g + geom_text(data=dsCounty[dsCounty$DV >labelThreshold, ], aes(x=ReferralYear,label=CountyName), vjust=1, size=4)
-  
+#   
   g <- g + scale_x_continuous(name="", breaks=years)
-  g <- g + scale_y_continuous(name=dvName, limits=c(0, max(dsCounty$DV)), expand=c(0,0))
+#   g <- g + scale_y_continuous(name=dvName, limits=c(0, max(dsCounty$DV)), expand=c(0,0))
   g <- g + theme(legend.position = 'none')
   return( g )
 }

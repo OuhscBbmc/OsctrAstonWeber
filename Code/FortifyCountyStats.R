@@ -82,7 +82,7 @@ dsCountyYearFortified$RateRank <- rank(dsCountyYearFortified$Rate)
 ### Work on dsStateYear
 ################################################################################################
 StateSummarizing <- function( df ) {
-  return( data.frame(Rate=sum(df$Rate), PopTotal=sum(df$PopTotal)) )
+  return( data.frame(Rate=sum(df$Rate, na.rm=T)) ) #, PopTotal=sum(df$PopTotal)
 }
 dsState <- ddply(dsCountyYearFortified, "ReferralYear", StateSummarizing)
 # dsState$CountPerCapitaAnnual <- dsState$Count / dsState$PopTotal

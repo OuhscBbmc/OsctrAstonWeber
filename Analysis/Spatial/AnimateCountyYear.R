@@ -33,6 +33,16 @@ years <- sort(unique(ds$ReferralYear)) #2007:2012
 intervals <- rep(1, length(years))
 intervals[1] <- 2 #4
 intervals[length(intervals)] <- 2 #4
+
+
+dsInitial <- ds[ds$ReferralYear==2007, ]
+MapCounties(dsValue=dsInitial, deviceWidth=14, showCountyValues=T, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling, paletteResource=palette)
+
+MapCountiesWithInset(dsValueCountyOneYear=dsInitial,  deviceWidth=18, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling,
+                     dsValueCountyAllYears=dsCountyAllYears, dsValueState=dsState, labelThreshold=.017886602, yearBand=year   )
+
+
+
 s <- saveGIF({
   for( year in years ) {
     dsSlice <- ds[ds$ReferralYear==year, ]
@@ -48,6 +58,3 @@ s <- saveGIF({
 # ss <- strsplit(s, split=" ")
 # ss[[length(ss)]][length(ss[[1]])]
 
-dsInitial <- ds[ds$ReferralYear==2007, ]
-p0 <- MapCountiesWithInset(dsValueCountyOneYear=dsInitial, deviceWidth=14, showCountyValues=T, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling, paletteResource=palette)
-print(p0)

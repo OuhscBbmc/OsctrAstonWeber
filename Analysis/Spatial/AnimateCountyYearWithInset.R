@@ -13,8 +13,6 @@ pathInputSummaryCountyYear <- file.path("./PhiFreeData/Derived/CountyYearFortifi
 pathInputMappingCode <- file.path("./Code/MapFunctions.R")
 pathDirectoryImages <-  file.path(getwd(), "Analysis/Spatial/AnimationImages") #This needs the qualified path to work correctly with ImageMagick
 pathOutputAnimation <- file.path("./Analysis/Spatial/MapAnimation.gif")
-palette <- RColorBrewer::brewer.pal(n=4, name="YlGn")
-colorMissing <- "gray80"  
 
 
 dsCountyAllYears <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
@@ -46,34 +44,32 @@ dsState <- dsState[dsState$ReferralYear %in% years, ]
 dsCounty$DV <- dsCounty[, dvName]
 dsState$DV <- dsState[, dvName]
 
+animationIntervals <- rep(1, length(years))
+animationIntervals[1] <- 1
+animationIntervals[length(animationIntervals)] <- 3
 
-intervals <- rep(1, length(years))
-intervals[1] <- 1
-intervals[length(intervals)] <- 3
+breakPoints <- c(-Inf, 3.64, 4.72, 5.79, Inf)
+intervalCount <- length(breakPoints) - 1L
+labelThreshold <- sort(breakPoints, decreasing=T)[2]
+palette <- RColorBrewer::brewer.pal(n=breakPoints, name="YlGn")
+# colorMissing <- "gray80"  
 
 
-GraphLongitudinalTrend(dsCounty=dsCountyAllYears, dsState=dsState, labelThreshold=.017886602, yearBand=2007)
+# GraphLongitudinalTrend(dsCounty=dsCountyAllYears, dsState=dsState, labelThreshold=.017886602, yearBand=2007)
 
 
 s <- saveGIF({
   for( year in years ) {
-    dsSlice <- dsCountyAllYears[dsCountyAllYears$ReferralYear==year, ]
-    
-    title <- paste(dvName, year)
-#     g <- MapCounties(dsValue=dsSlice, deviceWidth=14, showCountyValues=T, mapTitle=title,
-#                      dvFloor=dvFloor, dvCeiling=dvCeiling)
-    #     g <- MapCounties(dsValue=dsSlice, deviceWidth=14, showCountyValues=T, mapTitle=title,
-    #                      dvFloor=dvFloor, dvCeiling=dvCeiling)    
-#     print(g)
-    
-
+    dsSlice <- dsCountyAllYears[dsCountyAllYears$ReferralYear==year, ]    
+    title <- paste(year, "Amputation", dvName)
     
     MapCountiesWithInset(dsValueCountyOneYear=dsSlice,  deviceWidth=18, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling,
-                         dsValueCountyAllYears=dsCountyAllYears, dsValueState=dsState, labelThreshold=6, yearBand=year   )
-#     names(dsValueAllVariables)
-    
+                         dsValueCountyAllYears=dsCountyAllYears, dsValueState=dsState, labelThreshold=labelThreshold, yearBand=year,   
+                         intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=palette   )  
+#     print(g)
+#     ggsave(filename=file.path(pathDirectoryImages, paste0("Static", year, ".png")), plot=g)
   }
-}, movie.name=paste0(dvName, ".gif"), outdir=pathDirectoryImages, interval=intervals,ani.width=1600, ani.height=800)
+}, movie.name=paste0("Animated", dvName, ".gif"), outdir=pathDirectoryImages, interval=animationIntervals, ani.width=1600, ani.height=800)
 
 ss <- strsplit(s, split=" ")
 ss[[length(ss)]][length(ss[[1]])]

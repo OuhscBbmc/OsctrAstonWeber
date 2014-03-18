@@ -72,7 +72,8 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
   g <- g + theme(plot.margin=unit(c(0, 0, 0, 0), "cm")) #+ theme(panel.margin = unit(c(0, 0, 0, 0), "cm"))
   g <- g + annotate("text", x=-102, y=36.2, label=mapTitle, hjust=.5, vjust=0, size=deviceWidth*.7)
   #   g <- g + annotate("text", x=-101.8, y=36.2, label=mapTitle, hjust=.5, vjust=1, size=deviceWidth*.7)
-  g <- g + annotate("text", x=-99.1, y=33.9, label="From an incomplete dataset;\nDo not take actual values seriously", hjust=.5, vjust=.5, size=deviceWidth*.35)
+  #g <- g + annotate("text", x=-99.1, y=33.9, label="From an incomplete dataset;\nDo not take actual values seriously", hjust=.5, vjust=.5, size=deviceWidth*.35)
+g <- g + annotate("text", x=-99.1, y=33.9, label="Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients", hjust=.5, vjust=.5, size=deviceWidth*.35)
   
   return( g )
 }
@@ -91,8 +92,8 @@ MapCountiesWithInset <- function(
   #   Extend the insert 70% of the way up the parent panel, and 36% across.
   subvp <- viewport(width=.36, height=.7, x=0, y=0, just=c(0,0)) 
   
-  big <-  MapCounties(dsValue=dsValueCountyOneYear, deviceWidth=deviceWidth, mapTitle=mapTitle, dvFloor=dvFloor, dvCeiling=dvCeiling#,
-                      #intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=paletteResource
+  big <-  MapCounties(dsValue=dsValueCountyOneYear, deviceWidth=deviceWidth, mapTitle=mapTitle, dvFloor=dvFloor, dvCeiling=dvCeiling,
+                      intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=paletteResource
                       )
   
   small <- GraphLongitudinalTrend(dsCounty=dsValueCountyAllYears, dsState=dsValueState, labelThreshold=labelThreshold, yearBand=yearBand)
@@ -111,8 +112,10 @@ GraphLongitudinalTrend <- function( dsCounty, dsState, labelThreshold=.01, yearB
   if( !is.na(labelThreshold) )
     g <- g + geom_text(data=dsCounty[dsCounty$DV >labelThreshold, ], aes(x=ReferralYear,label=CountyName), vjust=1, size=4)
 #   
-  g <- g + scale_x_continuous(name="", breaks=years)
-#   g <- g + scale_y_continuous(name=dvName, limits=c(0, max(dsCounty$DV)), expand=c(0,0))
+  g <- g + scale_x_continuous(breaks=years)
+  g <- g + scale_y_continuous(limits=c(0, max(dsCounty$DV, na.rm=T)), expand=c(0,0))
+  g <- g + theme_bw()
   g <- g + theme(legend.position = 'none')
+  g <- g + labs(x=NULL, y=NULL)
   return( g )
 }

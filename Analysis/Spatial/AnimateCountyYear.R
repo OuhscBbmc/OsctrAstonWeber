@@ -6,10 +6,10 @@ require(animation)
 # pathDirectory <- "F:/Projects/OuHsc/SafeCare/Spatial/SafeCareSpatial"
 # pathDirectoryData <- file.path(pathDirectory, "PhiFreeDatasets")
 # pathDirectoryCode <- pathDirectory
-pathInputSummaryCountyYear <- file.path("./Data/Raw/2014-03-14 inpatient DM amp per 1000DM byYear noborder.csv")
+pathInputSummaryCountyYear <- file.path("./PhiFreeData/Derived/CountyYearFortified.csv")
 pathInputMappingCode <- file.path("./Code/MapFunctions.R")
 pathOutputAnimation <- file.path("./Analysis/Spatial/MapAnimation.gif")
-pathDirectoryImages <-  file.path("./Analysis/Spatial/AnimationImages")
+pathDirectoryImages <-  file.path(getwd(), "Analysis/Spatial/AnimationImages") #This needs the qualified path to work correctly with ImageMagick
 
 ds <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 
@@ -27,8 +27,8 @@ source(pathInputMappingCode)
 
 years <- sort(unique(ds$ReferralYear)) #2007:2012
 intervals <- rep(1, length(years))
-intervals[1] <- 4
-intervals[length(intervals)] <- 4
+intervals[1] <- 2 #4
+intervals[length(intervals)] <- 2 #4
 # saveMovie({
 s <- saveGIF({
   for( year in years ) {
@@ -38,9 +38,11 @@ s <- saveGIF({
     g <- MapCounties(dsValue=dsSlice, deviceWidth=14, showCountyValues=T, mapTitle=title,
                      dvFloor=dvFloor, dvCeiling=dvCeiling)
     print(g)
-    # ggsave(filename=file.path(pathDirectoryCode, "Animated.png"), plot=g)
+    ggsave(filename=file.path(pathDirectoryImages, paste0("Static", year, ".png")), plot=g)
   }
-}, movie.name=paste0(dvName, ".gif"), outdir=pathDirectoryImages, interval=intervals,ani.width=1600, ani.height=800)
+}, outdir=pathDirectoryImages, movie.name=paste0("Animated", dvName, ".gif"), interval=intervals,ani.width=1600, ani.height=800)
 
+# , outdir=pathDirectoryImages
+# movie.name=paste0(dvName, ".gif"),
 ss <- strsplit(s, split=" ")
 ss[[length(ss)]][length(ss[[1]])]

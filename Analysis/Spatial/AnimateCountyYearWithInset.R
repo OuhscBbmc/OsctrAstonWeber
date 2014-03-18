@@ -50,7 +50,7 @@ breakPoints <- c(min(dsCountyAllYears$DV, na.rm=T), 3.64, 4.72, 5.79, max(dsCoun
 # breakPointsPretty <- paste(breakPoints), collapse=", ")
 intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
-palette <- RColorBrewer::brewer.pal(n=intervalCount, name="GnBu")
+palette <- RColorBrewer::brewer.pal(n=intervalCount, name="YlGnBu")
 # colorMissing <- "gray80"  
 
 

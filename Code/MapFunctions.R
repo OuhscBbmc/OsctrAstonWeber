@@ -12,26 +12,29 @@ require(grid)
 require(ggplot2)
 require(plyr)
 
-MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="",
-                         dvFloor=min(dsValue$DV, na.rm=T), dvCeiling=max(dsValue$DV, na.rm=T),
+MapCounties <- function( dsValuePlot, deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="",
+                         dvFloor=min(dsValuePlot$DV, na.rm=T), dvCeiling=max(dsValuePlot$DV, na.rm=T),
                          intervalCount=3, breakPoints=seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1),
+                         titleLocationBottom=c(x=-102, y=36.2), subtitleLocationMiddle=c(x=-98.7, y=33.75),
                          paletteResource=rev(sequential_hcl(n=intervalCount, h=340, c.=c(80, 0), l=c(40, 90), power=colorPower))) {
   
-  dsValuePlot <- data.frame(
-    CountyID=dsValue$CountyID, 
-    CountyNameLower=tolower(dsValue$CountyName), 
-    CountyName=dsValue$CountyName, 
-    LabelLongitude=dsValue$LabelLongitude,
-    LabelLatitude=dsValue$LabelLatitude,
-    DV=dsValue$DV, 
-    DVLabel=dsValue$DVLabel,
-    stringsAsFactors=FALSE
-  )
+#   browser()
+#   dsValuePlot <- data.frame(
+#     CountyID=dsValue$CountyID, 
+#     CountyNameLower=tolower(dsValue$CountyName), 
+#     CountyName=dsValue$CountyName, 
+#     LabelLongitude=dsValue$LabelLongitude,
+#     LabelLatitude=dsValue$LabelLatitude,
+#     DV=dsValue$DV, 
+#     DVLabel=dsValue$DVLabel,
+#     stringsAsFactors=FALSE
+#   )
   
-#   intervalCount <- 3
-#   breakPoints <- pretty(dsValuePlot$DV, n=intervalCount)
-#   breakPoints <- seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)
-#   print(breakPoints)
+  #   intervalCount <- 3
+  #   breakPoints <- pretty(dsValuePlot$DV, n=intervalCount)
+  #   breakPoints <- seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)
+  #   print(breakPoints)
+  dsValuePlot$CountyNameLower <- tolower(dsValuePlot$CountyName)
   breakPointsPretty <- paste0("Cut points: (", paste(breakPoints, collapse=", "), ")")
   
   # highestFloor <- breakPoints[intervalCount]
@@ -50,14 +53,10 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
   }
   dsValuePlot$ColorFill <- ColorsContinuous(dsValuePlot$DV)
   dsValuePlot$ColorLabel <-t(ContrastingColor(dsValuePlot$ColorFill))#[!inHighestCategory])) 
-  
-# browser()
 
-
-dsBoundary <- map_data(map="county", region="OK")
+  dsBoundary <- map_data(map="county", region="OK")
   dsBoundary$region <- dsBoundary$subregion
   
-
   g <- ggplot(dsValuePlot, aes_string(map_id="CountyNameLower", color="ColorLabel")) 
   g <- g + geom_map(aes_string(fill="ColorFill"), map=dsBoundary, color="gray60")
   #g <- g + geom_text(aes(label=CountyName, x=long, y=lat)) 
@@ -75,10 +74,8 @@ dsBoundary <- map_data(map="county", region="OK")
   g <- g + theme(plot.background=element_blank(), panel.background=element_blank())
   g <- g + theme(legend.position=c(0,0), legend.justification=c("left","bottom"))
   g <- g + theme(plot.margin=unit(c(0, 0, 0, 0), "cm")) #+ theme(panel.margin = unit(c(0, 0, 0, 0), "cm"))
-  g <- g + annotate("text", x=-102, y=36.2, label=mapTitle, hjust=.5, vjust=0, size=deviceWidth*.7)
-  #   g <- g + annotate("text", x=-101.8, y=36.2, label=mapTitle, hjust=.5, vjust=1, size=deviceWidth*.7)
-  #g <- g + annotate("text", x=-99.1, y=33.9, label="From an incomplete dataset;\nDo not take actual values seriously", hjust=.5, vjust=.5, size=deviceWidth*.35)
-g <- g + annotate("text", x=-98.7, y=33.75, label=paste0("Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients\n", breakPointsPretty), hjust=.5, vjust=.5, size=deviceWidth*.35, lineheight=.85)
+  g <- g + annotate("text", x=titleLocationBottom["x"], y=titleLocationBottom["y"], label=mapTitle, hjust=.5, vjust=0, size=deviceWidth*.7)
+  g <- g + annotate("text", x=subtitleLocationMiddle["x"], y=subtitleLocationMiddle["y"], label=paste0("Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients\n", breakPointsPretty), hjust=.5, vjust=.5, size=deviceWidth*.35, lineheight=.85)
   
   return( g )
 }

@@ -15,7 +15,7 @@ require(plyr)
 MapCounties <- function( dsValuePlot, deviceWidth=10, colorPower=1, showCountyValues=TRUE, mapTitle="",
                          dvFloor=min(dsValuePlot$DV, na.rm=T), dvCeiling=max(dsValuePlot$DV, na.rm=T),
                          intervalCount=3, breakPoints=seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1),
-                         titleLocationBottom=c(x=-102, y=36.2), subtitleLocationMiddle=c(x=-98.7, y=33.75),
+                         titleLocationBottom=c(x=-102, y=36.2), subtitleLocationMiddle=c(x=-99, y=33.75),
                          paletteResource=rev(sequential_hcl(n=intervalCount, h=340, c.=c(80, 0), l=c(40, 90), power=colorPower))) {
   
 #   browser()
@@ -35,24 +35,32 @@ MapCounties <- function( dsValuePlot, deviceWidth=10, colorPower=1, showCountyVa
   #   breakPoints <- seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)
   #   print(breakPoints)
   dsValuePlot$CountyNameLower <- tolower(dsValuePlot$CountyName)
+  dsValuePlot$ValueMissing <- is.na(dsValuePlot$DV)
+  
   breakPointsPretty <- paste0("Cut points: (", paste(breakPoints, collapse=", "), ")")
+  
   
   # highestFloor <- breakPoints[intervalCount]
   # inHighestCategory <- (dsValuePlot$DV > highestFloor)
   
   
   DvInterval <- function( dv ) {
-    return( classIntervals(dv, n=intervalCount, style="fixed", fixedBreaks=breakPoints))  
+    return( classIntervals(dv, n=intervalCount, style="fixed", fixedBreaks=breakPoints) )  
   }
   ColorsContinuous <- function( dv ) {
     return( findColours(DvInterval(dv), paletteResource) )
   }
-  ContrastingColor <-function( color ){
-    lightness <- c(0.2, 0.6, 0) %*% col2rgb(color)/255
-    return( ifelse( lightness >= 0.4, "#0F0F0F", "#F0F0F0") )
+  ContrastingColor <- function( color, missingColor="gray50" ){
+#     browser()
+    lightness <- t(c(0.2, 0.6, 0) %*% col2rgb(color)/255)[, 1] #c(0.2, 0.6, 0) %*% col2rgb(color)/255
+    contrast <- ifelse( lightness >= 0.4, "#0F0F0F", "#F0F0F0")
+    contrast <- ifelse(is.na(color), missingColor, contrast)
+    return( contrast )
   }
   dsValuePlot$ColorFill <- ColorsContinuous(dsValuePlot$DV)
-  dsValuePlot$ColorLabel <-t(ContrastingColor(dsValuePlot$ColorFill))#[!inHighestCategory])) 
+#   browser()
+  dsValuePlot$ColorLabel <- ContrastingColor(dsValuePlot$ColorFill) #[!inHighestCategory])) 
+#   dsValuePlot$ColorLabel <- ifelse(is.na(color), "#AAAAAA", color)
 
   dsBoundary <- map_data(map="county", region="OK")
   dsBoundary$region <- dsBoundary$subregion

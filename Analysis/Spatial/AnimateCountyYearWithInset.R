@@ -32,10 +32,12 @@ yearsPretty <- paste0(min(years), " - ", max(years))
 dvName <- "Rate" #The number of victims per county population; darker counties have more victims, adjusted for pop
 dsCounty$DV <- dsCounty[, dvName]
 dsCounty$DVLabel <- gsub("^0.", ".",round(dsCounty$DV,3)) #Remove leading zeros.
+dsCounty$DVLabel <- ifelse(is.na(dsCounty$DVLabel), "(Missing)", dsCounty$DVLabel)
 
 dsCountyAllYears$DV <- dsCountyAllYears[, dvName]
 dsCountyAllYears$DVLabel <- gsub("^0.", ".",round(dsCountyAllYears$DV,3)) #Remove leading zeros.
 # dsCountyAllYears$DVLabel <- scales::comma(dsCountyAllYears$DV)
+dsCountyAllYears$DVLabel <- ifelse(is.na(dsCountyAllYears$DVLabel), "(Missing)", dsCountyAllYears$DVLabel)
 
 dvFloor <- min(dsCountyAllYears$DV, na.rm=T)
 dvCeiling <- max(dsCountyAllYears$DV, na.rm=T)
@@ -51,7 +53,7 @@ dsState$DV <- dsState[, dvName]
 #########################################################################
 ### Overall Time Graphs (static)
 #########################################################################
-breakPoints <- c(min(dsCountyAllYears$DV, na.rm=T), 3.44, 4.33, 4.60, max(dsCountyAllYears$DV, na.rm=T)) #Requested by Chris for the *overall* rate
+breakPoints <- c(min(dsCounty$DV, na.rm=T), 3.44, 4.33, 4.60, max(dsCounty$DV, na.rm=T)) #Requested by Chris for the *overall* rate
 intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
 palette <- RColorBrewer::brewer.pal(n=intervalCount, name="YlGnBu")
@@ -61,7 +63,7 @@ fileName <- file.path(pathDirectoryImages, "AmputationAllYears.png")
 
 png(filename=fileName, width=widthInches, height=heightInches, units="in", res=dpiStatic)
 MapCounties(dsValue=dsCounty,  deviceWidth=widthInches, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling,
-            titleLocationBottom = c(x=-102, y=35.7), subtitleLocationMiddle=c(x=-99, y=33.75),
+            titleLocationBottom = c(x=-102, y=35.7),
             intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=palette)  
 dev.off()
 

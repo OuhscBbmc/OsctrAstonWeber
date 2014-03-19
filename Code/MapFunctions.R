@@ -51,11 +51,15 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
   dsValuePlot$ColorFill <- ColorsContinuous(dsValuePlot$DV)
   dsValuePlot$ColorLabel <-t(ContrastingColor(dsValuePlot$ColorFill))#[!inHighestCategory])) 
   
-  dsBoundary <- map_data(map="county", region="OK")
+# browser()
+
+
+dsBoundary <- map_data(map="county", region="OK")
   dsBoundary$region <- dsBoundary$subregion
   
+
   g <- ggplot(dsValuePlot, aes_string(map_id="CountyNameLower", color="ColorLabel")) 
-  g <- g + geom_map(aes_string(fill="ColorFill"), map=dsBoundary, color="gray20")
+  g <- g + geom_map(aes_string(fill="ColorFill"), map=dsBoundary, color="gray60")
   #g <- g + geom_text(aes(label=CountyName, x=long, y=lat)) 
   if( showCountyValues ) {
     g <- g + geom_text(aes_string(label="CountyName", x="LabelLongitude", y="LabelLatitude"), vjust=-.2, size=deviceWidth*.25, na.rm=T)
@@ -74,7 +78,7 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
   g <- g + annotate("text", x=-102, y=36.2, label=mapTitle, hjust=.5, vjust=0, size=deviceWidth*.7)
   #   g <- g + annotate("text", x=-101.8, y=36.2, label=mapTitle, hjust=.5, vjust=1, size=deviceWidth*.7)
   #g <- g + annotate("text", x=-99.1, y=33.9, label="From an incomplete dataset;\nDo not take actual values seriously", hjust=.5, vjust=.5, size=deviceWidth*.35)
-g <- g + annotate("text", x=-99.1, y=33.9, label=paste0("Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients\n", breakPointsPretty), hjust=.5, vjust=.5, size=deviceWidth*.35)
+g <- g + annotate("text", x=-99.0, y=33.75, label=paste0("Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients\n", breakPointsPretty), hjust=.5, vjust=.5, size=deviceWidth*.35, lineheight=.8)
   
   return( g )
 }

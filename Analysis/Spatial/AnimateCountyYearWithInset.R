@@ -14,6 +14,11 @@ pathInputMappingCode <- file.path("./Code/MapFunctions.R")
 pathDirectoryImages <-  file.path(getwd(), "Analysis/Spatial/AnimationImages") #This needs the qualified path to work correctly with ImageMagick
 pathOutputAnimation <- file.path("./Analysis/Spatial/MapAnimation.gif")
 
+widthInches <- 12
+heightInches <- widthInches/2
+dpi <- 100
+
+
 dsCountyAllYears <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 # dsCountyAllYears <- dsCountyAllYears[dsCountyAllYears$ReferralYear %in% years, ]
 years <- sort(unique(dsCountyAllYears$ReferralYear))
@@ -61,14 +66,15 @@ s <- saveGIF({
   for( year in years ) {
     dsSlice <- dsCountyAllYears[dsCountyAllYears$ReferralYear==year, ]    
     title <- paste(year, "Amputation", dvName)
+    fileName <- file.path(pathDirectoryImages, paste0("Static", year, ".png"))
     
-    MapCountiesWithInset(dsValueCountyOneYear=dsSlice,  deviceWidth=18, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling,
+    png(filename=fileName, width=widthInches, height=heightInches, units="in",  res=dpi)
+    MapCountiesWithInset(dsValueCountyOneYear=dsSlice,  deviceWidth=widthInches, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling,
                          dsValueCountyAllYears=dsCountyAllYears, dsValueState=dsState, labelThreshold=labelThreshold, yearBand=year,   
-                         intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=palette   )  
-#     print(g)
-#     ggsave(filename=file.path(pathDirectoryImages, paste0("Static", year, ".png")), plot=g)
+                         intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=palette)  
+    dev.off()
   }
-}, movie.name=paste0("Animated", dvName, ".gif"), outdir=pathDirectoryImages, interval=animationIntervals, ani.width=1600, ani.height=800)
+}, movie.name=paste0("Animated", dvName, ".gif"), outdir=pathDirectoryImages, interval=animationIntervals, ani.width=widthInches*dpi, ani.height=heightInches*dpi)
 
 ss <- strsplit(s, split=" ")
 ss[[length(ss)]][length(ss[[1]])]

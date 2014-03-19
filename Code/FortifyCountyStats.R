@@ -35,7 +35,8 @@ dsCounty$RateRank <- rank(dsCounty$Rate)
 ## Indicate a point to label each county
 dsCenterPoint <- map("county", "oklahoma", fill=TRUE, col="transparent", plot=FALSE)
 # countyIDs <- seq_along(dsCenterPoint$names) # cbind(seq_along(dsCenterPoint$names), order(dsCenterPoint$names))
-countyIDs <- order(dsCenterPoint$names) #Using the 'order' fx accounts for the different alphabetical schemes
+#countyIDs <- order(dsCenterPoint$names) #Using the 'order' fx accounts for the different alphabetical schemes
+countyIDs <- seq_along(dsCenterPoint$names) #Using the 'order' fx accounts for the different alphabetical schemes
 spForCenters <- map2SpatialPolygons(dsCenterPoint, IDs=countyIDs,  proj4string=CRS(" +proj=longlat +datum=NAD83 +ellps=GRS80 +towgs84=0,0,0"))
 # spForCenters <- SpatialPolygonsDataFrame(spForCenters, data=dsCensus2012)
 labelCoordinates <- coordinates(spForCenters)

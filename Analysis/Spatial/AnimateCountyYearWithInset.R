@@ -18,7 +18,6 @@ widthInches <- 12
 heightInches <- widthInches/2
 dpi <- 100
 
-
 dsCountyAllYears <- read.csv(pathInputSummaryCountyYear, stringsAsFactors=FALSE)
 # dsCountyAllYears <- dsCountyAllYears[dsCountyAllYears$ReferralYear %in% years, ]
 years <- sort(unique(dsCountyAllYears$ReferralYear))
@@ -57,8 +56,6 @@ intervalCount <- length(breakPoints) - 1L
 labelThreshold <- sort(breakPoints, decreasing=T)[2]
 palette <- RColorBrewer::brewer.pal(n=intervalCount, name="YlGnBu")
 # colorMissing <- "gray80"  
-
-
 # GraphLongitudinalTrend(dsCounty=dsCountyAllYears, dsState=dsState, labelThreshold=.017886602, yearBand=2007)
 
 
@@ -68,13 +65,13 @@ s <- saveGIF({
     title <- paste(year, "Amputation", dvName)
     fileName <- file.path(pathDirectoryImages, paste0("Static", year, ".png"))
     
-    png(filename=fileName, width=widthInches, height=heightInches, units="in",  res=dpi)
+#     png(filename=fileName, width=widthInches, height=heightInches, units="in",  res=dpi)
     MapCountiesWithInset(dsValueCountyOneYear=dsSlice,  deviceWidth=widthInches, mapTitle=title, dvFloor=dvFloor, dvCeiling=dvCeiling,
                          dsValueCountyAllYears=dsCountyAllYears, dsValueState=dsState, labelThreshold=labelThreshold, yearBand=year,   
                          intervalCount=intervalCount, breakPoints=breakPoints, paletteResource=palette)  
-    dev.off()
+#     dev.off()
   }
 }, movie.name=paste0("Animated", dvName, ".gif"), outdir=pathDirectoryImages, interval=animationIntervals, ani.width=widthInches*dpi, ani.height=heightInches*dpi)
 
-ss <- strsplit(s, split=" ")
-ss[[length(ss)]][length(ss[[1]])]
+# ss <- strsplit(s, split=" ")
+# ss[[length(ss)]][length(ss[[1]])]

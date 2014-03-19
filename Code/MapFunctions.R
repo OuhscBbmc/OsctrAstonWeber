@@ -31,7 +31,7 @@ MapCounties <- function( dsValue, deviceWidth=10, colorPower=1, showCountyValues
 #   intervalCount <- 3
 #   breakPoints <- pretty(dsValuePlot$DV, n=intervalCount)
 #   breakPoints <- seq(from=dvFloor,to=dvCeiling, length.out=intervalCount+1)
-  print(breakPoints)
+#   print(breakPoints)
   breakPointsPretty <- paste0("Cut points: (", paste(breakPoints, collapse=", "), ")")
   
   # highestFloor <- breakPoints[intervalCount]
@@ -78,7 +78,7 @@ dsBoundary <- map_data(map="county", region="OK")
   g <- g + annotate("text", x=-102, y=36.2, label=mapTitle, hjust=.5, vjust=0, size=deviceWidth*.7)
   #   g <- g + annotate("text", x=-101.8, y=36.2, label=mapTitle, hjust=.5, vjust=1, size=deviceWidth*.7)
   #g <- g + annotate("text", x=-99.1, y=33.9, label="From an incomplete dataset;\nDo not take actual values seriously", hjust=.5, vjust=.5, size=deviceWidth*.35)
-g <- g + annotate("text", x=-99.0, y=33.75, label=paste0("Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients\n", breakPointsPretty), hjust=.5, vjust=.5, size=deviceWidth*.35, lineheight=.8)
+g <- g + annotate("text", x=-98.7, y=33.75, label=paste0("Number of diabetic patients\nreceiving amputations,\namong 1,000 diabetic patients\n", breakPointsPretty), hjust=.5, vjust=.5, size=deviceWidth*.35, lineheight=.85)
   
   return( g )
 }

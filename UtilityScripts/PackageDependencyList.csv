@@ -1,6 +1,8 @@
 PackageName,OnCran,Install,GitHubUsername,Description
 animation,TRUE,TRUE,,"Create animated GIF graphics."
+classInt,TRUE,TRUE,,"Splits continuous variables into factors more thoroughly than `cut()`."
 colorspace,TRUE,TRUE,,"Explicit control over the HCL color scheme."
+DataCombine,TRUE,TRUE,,"Used for creating lags."
 devtools,TRUE,TRUE,,"Used in the C1 survival for sourcing gists."
 digest,TRUE,TRUE,,"Creates SHA hashes for the recruiting database."
 evaluate,TRUE,TRUE,,"A package that Hadley et al use a lot in their packages.  It helps when things are passed by reference."
